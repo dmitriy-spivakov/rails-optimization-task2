@@ -43,8 +43,8 @@ def collect_stats_from_users(report, users_objects, &block)
   end
 end
 
-def work
-  file_lines = File.read('data.txt').split("\n")
+def work(file_path = 'data.txt')
+  file_lines = File.read(file_path).split("\n")
 
   users = []
   sessions = []
@@ -52,7 +52,7 @@ def work
   file_lines.each do |line|
     cols = line.split(',')
     users = users + [parse_user(line)] if cols[0] == 'user'
-    sessions = sessions + [parse_session(line)] if cols[0] == 'session'
+    sessions << parse_session(line) if cols[0] == 'session'
   end
 
   # Отчёт в json
@@ -175,3 +175,12 @@ session,2,3,Chrome 20,84,2016-11-25
     assert_equal expected_result, JSON.parse(File.read('result.json'))
   end
 end
+
+# work('prof_file')
+
+require 'memory_profiler'
+report = MemoryProfiler.report do
+  work('prof_file')
+end
+
+report.pretty_print(scale_bytes: true) 
