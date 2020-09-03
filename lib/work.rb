@@ -48,9 +48,11 @@ def work(file_path = 'data.txt')
   sessions = []
 
   file_lines.each do |line|
-    cols = line.split(',')
-    users = users + [parse_user(line)] if cols[0] == 'user'
-    sessions << parse_session(line) if cols[0] == 'session'
+    if line.start_with?('user')
+      users = users + [parse_user(line)]
+    else
+      sessions << parse_session(line)
+    end
   end
 
   # Отчёт в json
