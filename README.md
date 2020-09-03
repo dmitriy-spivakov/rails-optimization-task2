@@ -45,7 +45,7 @@ puts "MEMORY USAGE: %d MB" % (`ps -o rss= -p #{Process.pid}`.to_i / 1024)"
 
 ## Checklist
 - [x] Построить и проанализировать отчёт гемом `memory_profiler`
-- [ ] Построить и проанализировать отчёт `ruby-prof` в режиме `Flat`;
+- [x] Построить и проанализировать отчёт `ruby-prof` в режиме `Flat`;
 - [ ] Построить и проанализировать отчёт `ruby-prof` в режиме `Graph`;
 - [ ] Построить и проанализировать отчёт `ruby-prof` в режиме `CallStack`;
 - [ ] Построить и проанализировать отчёт `ruby-prof` в режиме `CallTree` c визуализацией в `QCachegrind`;
