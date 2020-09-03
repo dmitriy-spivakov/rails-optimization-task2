@@ -1,5 +1,4 @@
 # Deoptimized version of homework task
-
 require 'json'
 require 'pry'
 require 'date'
@@ -145,14 +144,4 @@ end
 
 def measure
   work('prof_file')
-end
-
-require 'memory_profiler'
-
-def profile
-report = MemoryProfiler.report do
-  work('prof_file')
-end
-
-report.pretty_print(scale_bytes: true) 
 end
