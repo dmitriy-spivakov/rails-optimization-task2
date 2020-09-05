@@ -66,6 +66,8 @@ def work(file_path)
   write_totals(users_counter, sessions_counter, unique_browsers)
 
   write_close_json_payload
+
+  print_mem_usage
 end
 
 def append_user(current_user, current_user_sessions, first_record)
@@ -100,7 +102,6 @@ def write_to_report(current_user, current_user_sessions)
   user_report['dates'] = current_user_sessions.map {|d| Date.parse(d['date'])}.sort.reverse.map { |d| d.iso8601 } 
 
   user_key = "#{current_user['first_name']} #{current_user['last_name']}"
-  
   append_to_report({ user_key => user_report }.to_json[1..-2])
 end
 
@@ -124,5 +125,9 @@ def append_to_report(string)
 end
 
 def print_mem_usage
-  puts "MEMORY USAGE: %d MB" % (`ps -o rss= -p #{Process.pid}`.to_i / 1024)
+  puts "MEMORY USAGE: %d MB" % (mem_usage)
+end
+
+def mem_usage
+  `ps -o rss= -p #{Process.pid}`.to_i / 1024
 end
