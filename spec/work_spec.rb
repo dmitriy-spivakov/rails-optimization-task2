@@ -1,7 +1,9 @@
 require_relative '../lib/work.rb'
 
+require 'benchmark'
+
 RSpec.describe '.work' do
-  before do 
+  before do
     File.write('result.json', '')
     File.write('data.txt',
 'user,0,Leida,Cira,0
@@ -40,5 +42,48 @@ session,2,3,Chrome 20,84,2016-11-25
         expect(actual_result[key]).to eq(expected_result[key])
       end
     end
+  end
+
+  shared_examples_for 'performance spec' do |input_size, mem_budget, time_budget|
+    context "when the input size is #{input_size}" do
+      before { create_sample_file(input_size.to_s, input_size) }
+
+      let!(:benchmark_data) { measure_work(input_size.to_s) }
+
+      it 'does not exceed time budget' do
+        expect(benchmark_data[:time]).to be <= time_budget
+      end
+
+      it 'does not exceed memory budget' do
+        expect(benchmark_data[:mem]).to be <= mem_budget
+      end
+    end
+  end
+
+  describe 'memory consumption' do
+    it_behaves_like 'performance spec', 10_000, 30, 0.5
+    it_behaves_like 'performance spec', 50_000, 30, 5
+    it_behaves_like 'performance spec', 100_000, 30, 10
+    
+    xcontext 'prod data set', :slow do
+      it 'does not exceed mem budget' do
+        expect(measure_work('data_large.txt')[:mem]).to be <= 30
+      end
+    end
+  end
+
+  def create_sample_file(name, size)
+    return if File.exists?(name)
+
+    `tail -n #{size} data_large.txt > #{name}`
+  end
+
+  def measure_work(file_name)
+    memory = nil
+    time = Benchmark.measure do
+      memory = work(file_name)
+    end
+
+    { time: time.real, mem: memory }
   end
 end

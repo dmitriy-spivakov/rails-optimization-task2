@@ -2,6 +2,7 @@
 require 'json'
 require 'pry'
 require 'date'
+require 'set'
 
 REPORT_PATH = 'result.json'.freeze
 
@@ -68,6 +69,8 @@ def work(file_path)
   write_close_json_payload
 
   print_mem_usage
+
+  mem_usage
 end
 
 def append_user(current_user, current_user_sessions, first_record)
