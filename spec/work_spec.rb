@@ -62,12 +62,20 @@ session,2,3,Chrome 20,84,2016-11-25
 
   describe 'memory consumption' do
     it_behaves_like 'performance spec', 10_000, 30, 0.5
-    it_behaves_like 'performance spec', 50_000, 30, 5
-    it_behaves_like 'performance spec', 100_000, 30, 10
+    it_behaves_like 'performance spec', 50_000, 30, 1
+    it_behaves_like 'performance spec', 100_000, 30, 2
     
-    xcontext 'prod data set', :slow do
-      it 'does not exceed mem budget' do
-        expect(measure_work('data_large.txt')[:mem]).to be <= 30
+    context 'prod data set', :slow do
+      let!(:benchmark_data) { measure_work('data_large.txt') }
+      let(:time_budget) { 20 }
+      let(:mem_budget) { 70 }
+
+      it 'does not exceed time budget' do
+        expect(benchmark_data[:time]).to be <= time_budget
+      end
+
+      it 'does not exceed memory budget' do
+        expect(benchmark_data[:mem]).to be <= mem_budget
       end
     end
   end
