@@ -24,7 +24,7 @@ session,2,2,Firefox 47,17,2018-02-02
 session,2,3,Chrome 20,84,2016-11-25
 ')
 
-    work
+    work('data.txt')
   end
 
   let!(:expected_result) do
@@ -35,6 +35,10 @@ session,2,3,Chrome 20,84,2016-11-25
   it 'produces correct result' do
     actual_result = JSON.parse(File.read('result.json'))
 
-    expect(actual_result).to eq(expected_result)
+    aggregate_failures do
+      expected_result.keys.each do |key|
+        expect(actual_result[key]).to eq(expected_result[key])
+      end
+    end
   end
 end
